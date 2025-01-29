@@ -1,4 +1,5 @@
 import { Tab, TabGroup, TabList, Select } from '@headlessui/react'
+import MealCard from './MealCard'
 export default function MainPage() {
 	return (
 		<div className="bg-[#dddddd] border-t-3 border-[#cacaca] ">
@@ -28,19 +29,7 @@ export default function MainPage() {
 				<div className="flex items-center justify-around mt-20">
 					<div>
 						<div>
-							<div className="bg-white p-4 relative shadow-md rounded-md w-[170px]">
-								<div className="bg-[url(./assets/navbarimg1.jpg)] w-[110px] h-[110px] bg-center bg-cover absolute top-[-30px] left-1/2 -translate-x-1/2 shadow-lg rounded-xl"></div>
-
-								<h3 className="mt-20 text-center font-semibold">Nazwa</h3>
-								<p className="text-center text-gray-500">cos / typ / kogo to czy cos</p>
-
-								<div className="flex justify-center gap-4 mt-2">
-									<a href="#" className="text-blue-500">
-										Ulubione
-									</a>
-									<p className="text-gray-500"> Flaga</p>
-								</div>
-							</div>
+							<MealCard name="siema" area='siem2' category='sie3' image='siem'/>
 						</div>
 					</div>
 					<div>
