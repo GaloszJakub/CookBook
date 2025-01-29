@@ -1,28 +1,42 @@
 import { Tab, TabGroup, TabList, Select } from '@headlessui/react'
-import { useEffect, useState } from 'react'
-/*import MealCard from './MealCard'*/
 
-type Meal ={
-	strName: string;
-	strCategory: string;
-	strArea: string;
-	strImg: string;
+import { useState, useEffect } from 'react'
+
+// Definicja typu Meal, odpowiadająca strukturze danych z API
+interface Meal {
+	idMeal: string
+	strMeal: string
+	strMealThumb: string
+	strCategory: string
+	strArea: string
 }
 
 export default function MainPage() {
+	// Typowanie stanu jako array Meal
+	const [meals, setMeals] = useState<Meal[]>([])
 
-	const [meals, setMeals] = useState<Meal[]>([]);
+	// Pobieranie danych z API przy renderowaniu komponentu
 	useEffect(() => {
-		const fetchMeals = async () =>{
-			const response = await fetch("https://www.themealdb.com/api/json/v1/1/search.php?s=Arrabiata")
-			const data = await response.json();
-			setMeals(data.meals)
+		const fetchMeals = async () => {
+			try {
+				const response = await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=')
+				const data = await response.json()
+
+				// Ustawiamy dane do stanu (np. 9 pierwszych posiłków)
+				if (data.meals) {
+					setMeals(data.meals.slice(0, 9)) // Pobieramy tylko pierwsze 9 posiłków
+				}
+			} catch (error) {
+				console.error('Error fetching meals:', error)
+			}
 		}
-		fetchMeals();
-	}, [] );
+
+		fetchMeals()
+	}, []) // Tylko raz przy renderowaniu
+
 	return (
 		<div className="bg-[#dddddd] border-t-3 border-[#cacaca] ">
-			<div className="container  mx-auto p-4 border">
+			<div className="container mx-auto p-4 border">
 				<div className="flex justify-around items-center">
 					<div>
 						<TabGroup>
@@ -45,39 +59,29 @@ export default function MainPage() {
 						</Select>
 					</div>
 				</div>
-				<div className="flex items-center justify-around mt-20">
-					<div>
-						<div>
-						<div className="bg-white p-4 relative shadow-md rounded-md w-[170px]">
-			<div className="bg-[url{image}] w-[110px] h-[110px] bg-center bg-cover absolute top-[-30px] left-1/2 -translate-x-1/2 shadow-lg rounded-xl"></div>
+				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-20">
+					{/* Generowanie kart na podstawie danych z API */}
+					{meals.map(meal => (
+						<div key={meal.idMeal} className="bg-white p-4 relative shadow-md rounded-md w-full">
+							{/* Obrazek */}
+							<div
+								className="bg-cover w-[110px] h-[110px] bg-center absolute top-[-30px] left-1/2 -translate-x-1/2 shadow-lg rounded-xl"
+								style={{ backgroundImage: `url(${meal.strMealThumb})` }}></div>
+							{/* Nazwa posiłku */}
+							<h3 className="mt-20 text-center font-semibold">{meal.strMeal}</h3>
+							{/* Kategoria */}
+							<p className="text-center text-gray-500">{meal.strCategory}</p>
+							{/* Kraj */}
+							<p className="text-center text-gray-500">{meal.strArea}</p>
 
-			<h3 className="mt-20 text-center font-semibold">siema</h3>
-			<p className="text-center text-gray-500">s2</p>
-			<p className="text-center text-gray-500">s3</p>
-
-			<div className="flex justify-center gap-4 mt-2">
-				<a href="#" className="text-blue-500">
-					Ulubione
-				</a>
-				<p className="text-gray-600"> s4</p>
-			</div>
-		</div>
-						</div>
-					</div>
-					<div>
-						<div>
-							<div className="bg-white p-5">
-								<h3 className="mb-5">Ostatnio oglodane</h3>
-								<div className="flex items-center gap-4">
-									<div className="bg-[url(./assets/navbarimg1.jpg)] w-[40px] h-[40px] bg-center bg-cover rounded-full"></div>
-									<div>
-										<h3 className="font-bold text-md">nazwa</h3>
-										<p className="text-sm">jakis opis czy cos</p>
-									</div>
-								</div>
+							<div className="flex justify-center gap-4 mt-2">
+								<a href="#" className="text-blue-500">
+									Ulubione
+								</a>
+								<p className="text-gray-600">Szczegóły</p>
 							</div>
 						</div>
-					</div>
+					))}
 				</div>
 			</div>
 		</div>
