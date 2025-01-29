@@ -1,6 +1,25 @@
 import { Tab, TabGroup, TabList, Select } from '@headlessui/react'
-import MealCard from './MealCard'
+import { useEffect, useState } from 'react'
+/*import MealCard from './MealCard'*/
+
+type Meal ={
+	strName: string;
+	strCategory: string;
+	strArea: string;
+	strImg: string;
+}
+
 export default function MainPage() {
+
+	const [meals, setMeals] = useState<Meal[]>([]);
+	useEffect(() => {
+		const fetchMeals = async () =>{
+			const response = await fetch("https://www.themealdb.com/api/json/v1/1/search.php?s=Arrabiata")
+			const data = await response.json();
+			setMeals(data.meals)
+		}
+		fetchMeals();
+	}, [] );
 	return (
 		<div className="bg-[#dddddd] border-t-3 border-[#cacaca] ">
 			<div className="container  mx-auto p-4 border">
@@ -29,7 +48,20 @@ export default function MainPage() {
 				<div className="flex items-center justify-around mt-20">
 					<div>
 						<div>
-							<MealCard name="siema" area="siem2" category="sie3" image="siem" />{' '}
+						<div className="bg-white p-4 relative shadow-md rounded-md w-[170px]">
+			<div className="bg-[url{image}] w-[110px] h-[110px] bg-center bg-cover absolute top-[-30px] left-1/2 -translate-x-1/2 shadow-lg rounded-xl"></div>
+
+			<h3 className="mt-20 text-center font-semibold">siema</h3>
+			<p className="text-center text-gray-500">s2</p>
+			<p className="text-center text-gray-500">s3</p>
+
+			<div className="flex justify-center gap-4 mt-2">
+				<a href="#" className="text-blue-500">
+					Ulubione
+				</a>
+				<p className="text-gray-600"> s4</p>
+			</div>
+		</div>
 						</div>
 					</div>
 					<div>

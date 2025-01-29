@@ -18,8 +18,9 @@ export default function MealCard({ name, image, category, area }: MealProps) {
 				<a href="#" className="text-blue-500">
 					Ulubione
 				</a>
-				<p className="text-gray-500"> {image}</p>
+				<p className="text-gray-600"> {image}</p>
 			</div>
 		</div>
 	)
 }
+	
