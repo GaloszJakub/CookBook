@@ -29,7 +29,7 @@ export default function MainPage() {
 				<div className="flex items-center justify-around mt-20">
 					<div>
 						<div>
-							<MealCard name="siema" area='siem2' category='sie3' image='siem'/>
+							<MealCard name="siema" area="siem2" category="sie3" image="siem" />{' '}
 						</div>
 					</div>
 					<div>
