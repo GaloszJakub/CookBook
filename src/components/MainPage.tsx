@@ -1,20 +1,32 @@
 import { Tab, TabGroup, TabList, Select } from '@headlessui/react'
-
+import Cookies from 'cookies-ts'
 import { useState, useEffect } from 'react'
 
 // Definicja typu Meal, odpowiadająca strukturze danych z API
 interface Meal {
-	idMeal: string
+	idMeal: number
 	strMeal: string
 	strMealThumb: string
 	strCategory: string
 	strArea: string
 }
 
+const cookies = new Cookies()
+
+
+
 export default function MainPage() {
 	// Typowanie stanu jako array Meal
 	const [meals, setMeals] = useState<Meal[]>([])
-
+	const [favouriteMeal, setFavouriteMeal] = useState<number[]>([]);
+	useEffect(() => {
+		cookies.set("favouriteMeals", JSON.stringify(favouriteMeal), { expires: 365 }); // Zapis na 7 dni
+	  }, [favouriteMeal]);
+	
+	const addFavourite = (id:number) => {
+		setFavouriteMeal((prevFavorites =>[...prevFavorites, id]));
+	
+	}
 	// Pobieranie danych z API przy renderowaniu komponentu
 	useEffect(() => {
 		const fetchMeals = async () => {
@@ -75,7 +87,7 @@ export default function MainPage() {
 							<p className="text-center text-gray-500">{meal.strArea}</p>
 
 							<div className="flex justify-center gap-4 mt-2">
-								<a href="#" className="text-blue-500">
+								<a href="#" className="text-blue-500" onClick={ () => addFavourite(meal.idMeal)}>
 									Ulubione
 								</a>
 								<p className="text-gray-600">Szczegóły</p>
