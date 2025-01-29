@@ -34,7 +34,7 @@ export default function MainPage() {
 	const addFavourite = (id:number) => {
 		setFavouriteMeal((prevFavorites =>[...prevFavorites, id]));
 	
-	}	const [filteredMeals, setFilteredMeals] = useState<Meal[]>([]) // Stany do filtrowanych posiłków
+	const [filteredMeals, setFilteredMeals] = useState<Meal[]>([]) // Stany do filtrowanych posiłków
 	const [categories, setCategories] = useState<Category[]>([]) // Stany do kategorii
 	const [selectedCategory, setSelectedCategory] = useState<string>('') // Domyślnie pusta, oznacza wszystkie posiłki
 	const [visibleMealsCount, setVisibleMealsCount] = useState<number>(8) // Maksymalna liczba wyświetlanych elementów
@@ -144,7 +144,7 @@ export default function MainPage() {
 								<p className="text-center text-gray-500">{meal.strArea}</p>
 
 								<div className="flex justify-center gap-4 mt-2">
-									<a href="#" className="text-blue-500">
+									<a href="#" className="text-blue-500" onClick={() => addFavourite(meal.idMeal)} >
 										Ulubione
 									</a>
 									<p className="text-gray-600">Szczegóły</p>
