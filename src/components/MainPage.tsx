@@ -32,18 +32,18 @@ export default function MainPage() {
 	const [visibleMealsCount, setVisibleMealsCount] = useState<number>(8)
 	const [favouriteMeals, setFavouriteMeals] = useState<number[]>([])
 
-	// Wczytywanie ulubionych posiłków z cookies
-	useEffect(() => {
-		const storedFavourites = cookies.get('favouriteMeals')
+	useEffect(() => {	
+		const storedFavourites = cookies.get('favouriteMeals');
 		if (storedFavourites) {
-			setFavouriteMeals(JSON.parse(storedFavourites))
+			setFavouriteMeals(JSON.parse(storedFavourites));
 		}
-	}, [])
-
-	// Zapisywanie ulubionych posiłków w cookies
+	}, []);
+	
 	useEffect(() => {
-		cookies.set('favouriteMeals', JSON.stringify(favouriteMeals), { expires: 365 })
-	}, [favouriteMeals])
+		if (favouriteMeals && favouriteMeals.length > 0) {
+			cookies.set('favouriteMeals', JSON.stringify(favouriteMeals), { expires: 365 });
+		}
+	}, [favouriteMeals]);
 
 	useEffect(() => {
 		const storedFavourites = cookies.get('favouriteMeals')
@@ -184,7 +184,14 @@ export default function MainPage() {
 					<div className="lg:w-1/4 mb-20">
 						<div className="bg-white p-4 shadow-md rounded-md">
 							<h1 className="font-semibold text-3xl">Ulubione</h1>
-							<p>cos tam potem</p>
+							<ul>
+							{meals.filter(({ idMeal }) => favouriteMeals.includes(idMeal)).map(({ idMeal, strMeal, strMealThumb }) => (
+								<li key={idMeal} className="flex items-center gap-2 mt-4">
+									<img src={strMealThumb} alt={strMeal} className="w-12 h-12 rounded-full" />
+									<p>{strMeal}</p>
+								</li>
+							))}
+						</ul>
 						</div>
 					</div>
 				</div>
