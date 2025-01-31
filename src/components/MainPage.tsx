@@ -22,6 +22,7 @@ interface Category {
 
 const cookies = new Cookies()
 
+
 export default function MainPage() {
 	const [meals, setMeals] = useState<Meal[]>([])
 	const [filteredMeals, setFilteredMeals] = useState<Meal[]>([])
@@ -49,6 +50,7 @@ export default function MainPage() {
 			setFavouriteMeals(JSON.parse(storedFavourites));
 		}
 	}, []);
+	
 	const isFavourite = (id:number) => favouriteMeals.includes(id);
 
 	// Dodawanie ulubionego posiłku
