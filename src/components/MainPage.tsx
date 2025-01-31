@@ -43,15 +43,19 @@ export default function MainPage() {
 		cookies.set('favouriteMeals', JSON.stringify(favouriteMeals), { expires: 365 })
 	}, [favouriteMeals])
 
-	// Funkcja do dodawania/usuwania ulubionego posiłku
+	useEffect(() => {
+		const storedFavourites = cookies.get("favouriteMeals");
+		if (storedFavourites) {
+			setFavouriteMeals(JSON.parse(storedFavourites));
+		}
+	}, []);
+	const isFavourite = (id:number) => favouriteMeals.includes(id);
+
+	// Dodawanie ulubionego posiłku
 	const toggleFavourite = (id: number) => {
-		setFavouriteMeals(
-			prevFavourites =>
-				prevFavourites.includes(id)
-					? prevFavourites.filter(favId => favId !== id) // Usuwamy, jeśli już jest
-					: [...prevFavourites, id] // Dodajemy, jeśli nie ma
-		)
-	}
+		setFavouriteMeals(prevFavorites => 
+			prevFavorites.includes(id) ? prevFavorites.filter(fav => fav !== id) : [...prevFavorites, id]); 
+	};
 
 	// Pobieranie danych z API
 	useEffect(() => {
