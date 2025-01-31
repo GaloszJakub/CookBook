@@ -122,7 +122,7 @@ export default function MainPage() {
 						{selectedCategory || 'Wybierz kategorię'}
 						{isOpen ? <HiChevronUp className="w-5 h-5" /> : <HiChevronDown className="w-5 h-5" />}
 					</button>
-					//Lista kategorii
+					{/* Lista kategorii */}
 					<AnimatePresence>
 						{isOpen && (
 							<motion.ul
@@ -154,7 +154,7 @@ export default function MainPage() {
 						)}
 					</AnimatePresence>
 				</div>
-				//Lista posiłków
+				{/* Lista posiłków */}
 				<div className="flex  gap-6 mt-20  flex-col-reverse lg:flex-row mx-auto ">
 					<div className="lg:w-3/4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4  gap-10 gap-y-20  ">
 						{filteredMeals.slice(0, visibleMealsCount).map(meal => (
@@ -180,7 +180,7 @@ export default function MainPage() {
 							</div>
 						))}
 					</div>
-					//Ulubione
+					{/* Ulubione */}
 					<div className="lg:w-1/4 mb-20">
 						<div className="bg-white p-4 shadow-md rounded-md">
 							<h1 className="font-semibold text-3xl">Ulubione</h1>
@@ -188,7 +188,7 @@ export default function MainPage() {
 						</div>
 					</div>
 				</div>
-				//Przycisk Pokaż więcej
+				{/* Przycisk Pokaż więcej */}
 				{filteredMeals.length > visibleMealsCount && (
 					<div className="flex mt-6 justify-center">
 						<button
