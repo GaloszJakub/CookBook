@@ -1,102 +1,108 @@
-import { Tab, TabGroup, TabList } from '@headlessui/react';
-import Cookies from 'cookies-ts';
-import { useState, useEffect } from 'react';
+import { Tab, TabGroup, TabList } from '@headlessui/react'
+import Cookies from 'cookies-ts'
+import { useState, useEffect } from 'react'
+import { IoIosHeartEmpty, IoMdHeart } from 'react-icons/io'
 
-// Definicja typu Meal, odpowiadająca strukturze danych z API
+// Definicja typu Meal
 interface Meal {
-	idMeal: number;
-	strMeal: string;
-	strMealThumb: string;
-	strCategory: string;
-	strArea: string;
+	idMeal: number
+	strMeal: string
+	strMealThumb: string
+	strCategory: string
+	strArea: string
 }
 
 // Definicja typu Category
 interface Category {
-	idCategory: string;
-	strCategory: string;
-	strCategoryThumb: string;
-	strCategoryDescription: string;
+	idCategory: string
+	strCategory: string
+	strCategoryThumb: string
+	strCategoryDescription: string
 }
 
-const cookies = new Cookies();
+const cookies = new Cookies()
 
 export default function MainPage() {
-	const [meals, setMeals] = useState<Meal[]>([]);
-	const [filteredMeals, setFilteredMeals] = useState<Meal[]>([]);
-	const [categories, setCategories] = useState<Category[]>([]);
-	const [selectedCategory, setSelectedCategory] = useState<string>('');
-	const [visibleMealsCount, setVisibleMealsCount] = useState<number>(8);
-	const [favouriteMeal, setFavouriteMeal] = useState<number[]>([]);
+	const [meals, setMeals] = useState<Meal[]>([])
+	const [filteredMeals, setFilteredMeals] = useState<Meal[]>([])
+	const [categories, setCategories] = useState<Category[]>([])
+	const [selectedCategory, setSelectedCategory] = useState<string>('')
+	const [visibleMealsCount, setVisibleMealsCount] = useState<number>(8)
+	const [favouriteMeals, setFavouriteMeals] = useState<number[]>([])
 
 	// Wczytywanie ulubionych posiłków z cookies
 	useEffect(() => {
-		const storedFavourites = cookies.get("favouriteMeals");
+		const storedFavourites = cookies.get('favouriteMeals')
 		if (storedFavourites) {
-			setFavouriteMeal(JSON.parse(storedFavourites));
+			setFavouriteMeals(JSON.parse(storedFavourites))
 		}
-	}, []);
+	}, [])
 
 	// Zapisywanie ulubionych posiłków w cookies
 	useEffect(() => {
-		cookies.set("favouriteMeals", JSON.stringify(favouriteMeal), { expires: 365 });
-	}, [favouriteMeal]);
+		cookies.set('favouriteMeals', JSON.stringify(favouriteMeals), { expires: 365 })
+	}, [favouriteMeals])
 
-	// Dodawanie ulubionego posiłku
-	const addFavourite = (id: number) => {
-		setFavouriteMeal(prevFavorites => [...new Set([...prevFavorites, id])]); // Zapobiega duplikatom
-	};
+	// Funkcja do dodawania/usuwania ulubionego posiłku
+	const toggleFavourite = (id: number) => {
+		setFavouriteMeals(
+			prevFavourites =>
+				prevFavourites.includes(id)
+					? prevFavourites.filter(favId => favId !== id) // Usuwamy, jeśli już jest
+					: [...prevFavourites, id] // Dodajemy, jeśli nie ma
+		)
+	}
 
 	// Pobieranie danych z API
 	useEffect(() => {
 		const fetchMeals = async () => {
 			try {
-				const response = await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=');
-				const data = await response.json();
+				const response = await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=')
+				const data = await response.json()
 				if (data.meals) {
-					setMeals(data.meals);
-					setFilteredMeals(data.meals);
+					setMeals(data.meals)
+					setFilteredMeals(data.meals)
 				}
 			} catch (error) {
-				console.error('Error fetching meals:', error);
+				console.error('Error fetching meals:', error)
 			}
-		};
+		}
 
 		const fetchCategories = async () => {
 			try {
-				const response = await fetch('https://www.themealdb.com/api/json/v1/1/categories.php');
-				const data = await response.json();
+				const response = await fetch('https://www.themealdb.com/api/json/v1/1/categories.php')
+				const data = await response.json()
 				if (data.categories) {
-					setCategories(data.categories);
+					setCategories(data.categories)
 				}
 			} catch (error) {
-				console.error('Error fetching categories:', error);
+				console.error('Error fetching categories:', error)
 			}
-		};
+		}
 
-		fetchMeals();
-		fetchCategories();
-	}, []);
+		fetchMeals()
+		fetchCategories()
+	}, [])
 
 	// Filtrowanie posiłków po kategorii
 	const filterMealsByCategory = (category: string) => {
-		setSelectedCategory(category);
+		setSelectedCategory(category)
 		if (category === '') {
-			setFilteredMeals(meals);
+			setFilteredMeals(meals)
 		} else {
-			setFilteredMeals(meals.filter(meal => meal.strCategory === category));
+			setFilteredMeals(meals.filter(meal => meal.strCategory === category))
 		}
-	};
+	}
 
 	// Inicjalizacja filtrowania po pobraniu posiłków
 	useEffect(() => {
-		filterMealsByCategory('');
-	}, [meals]);
+		filterMealsByCategory('')
+	}, [meals])
 
 	// Pokazywanie większej liczby posiłków
 	const showMoreMeals = () => {
-		setVisibleMealsCount(prevCount => prevCount + 8);
-	};
+		setVisibleMealsCount(prevCount => prevCount + 8)
+	}
 
 	return (
 		<div className="bg-[#f4f4f4]">
@@ -136,8 +142,8 @@ export default function MainPage() {
 								<p className="text-center text-gray-500">{meal.strCategory}</p>
 								<p className="text-center text-gray-500">{meal.strArea}</p>
 								<div className="flex justify-center gap-4 mt-2">
-									<button className="text-blue-500" onClick={() => addFavourite(meal.idMeal)}>
-										Ulubione
+									<button onClick={() => toggleFavourite(meal.idMeal)} className="text-red-500 text-2xl">
+										{favouriteMeals.includes(meal.idMeal) ? <IoMdHeart /> : <IoIosHeartEmpty />}
 									</button>
 									<p className="text-gray-600">Szczegóły</p>
 								</div>
@@ -164,5 +170,5 @@ export default function MainPage() {
 				)}
 			</div>
 		</div>
-	);
+	)
 }
