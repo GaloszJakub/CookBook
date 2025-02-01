@@ -1,4 +1,5 @@
 import { IoIosHeartEmpty, IoMdHeart } from 'react-icons/io'
+import { Link } from 'react-router-dom'
 
 interface Meal {
 	idMeal: number
@@ -30,9 +31,11 @@ export default function MealCard({ meal, isFavourite, toggleFavourite }: Props) 
 					className="text-red-500 text-2xl cursor-pointer hover:scale-150 scale-130 duration-300">
 					{isFavourite ? <IoMdHeart /> : <IoIosHeartEmpty />}
 				</button>
-				<p className=" bg-blue-500 px-2 py-1 rounded-full font-semibold tracking-wide cursor-pointer hover:scale-105 duration-300 text-white w-full text-center">
-					Sprawdź!
-				</p>
+				<Link
+							to={`/meal/${meal.idMeal}`}
+							className="bg-blue-500 px-2 py-1 rounded-full font-semibold tracking-wide cursor-pointer hover:scale-105 duration-300 text-white w-full text-center">
+							Sprawdź!
+						</Link>
 			</div>
 		</div>
 	)

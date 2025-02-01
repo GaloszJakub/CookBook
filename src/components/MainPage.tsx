@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react'
-import Cookies from 'cookies-ts'
 import MealList from './MealList'
 import CategoryDropdown from './CategoryDropdown'
 import FavouriteList from './FavouriteList'
-
-const cookies = new Cookies()
+import { useFavourites } from '../hooks/useFavourites'
 
 // Definicja typów
 interface Meal {
@@ -26,7 +24,7 @@ export default function MainPage() {
 	const [categories, setCategories] = useState<Category[]>([])
 	const [selectedCategory, setSelectedCategory] = useState<string>('')
 	const [visibleMealsCount, setVisibleMealsCount] = useState<number>(8)
-	const [favouriteMeals, setFavouriteMeals] = useState<number[]>([])
+	const { favouriteMeals, toggleFavourite } = useFavourites()
 
 	// Pobieranie danych
 	useEffect(() => {
@@ -59,28 +57,6 @@ export default function MainPage() {
 		fetchCategories()
 	}, [])
 
-	// Pobieranie ulubionych posiłków z cookies
-	useEffect(() => {
-		const storedFavourites = cookies.get('favouriteMeals')
-		if (storedFavourites) {
-			setFavouriteMeals(JSON.parse(storedFavourites))
-		}
-	}, [])
-
-	// Zapisywanie ulubionych posiłków do cookies
-	useEffect(() => {
-		if (favouriteMeals.length > 0) {
-			cookies.set('favouriteMeals', JSON.stringify(favouriteMeals), { expires: 365 })
-		}
-	}, [favouriteMeals])
-
-	// Przełączanie ulubionych posiłków
-	const toggleFavourite = (id: number) => {
-		setFavouriteMeals(prev =>
-			prev.includes(id) ? prev.filter(fav => fav !== id) : [...prev, id]
-		)
-	}
-
 	// Filtrowanie posiłków po kategorii
 	const filterMealsByCategory = (category: string) => {
 		setSelectedCategory(category)
@@ -97,26 +73,28 @@ export default function MainPage() {
 	}
 
 	return (
-		<div className="container mx-auto p-4">
-			<CategoryDropdown categories={categories} selectedCategory={selectedCategory} filterMealsByCategory={filterMealsByCategory} />
-			<div className="flex flex-col-reverse lg:flex-row gap-6 mt-10">
-				{/* Lista posiłków */}
-				<div className="lg:w-3/4">
-					<MealList meals={filteredMeals} visibleMealsCount={visibleMealsCount} favouriteMeals={favouriteMeals} toggleFavourite={toggleFavourite} />
-					{filteredMeals.length > visibleMealsCount && (
-						<div className="flex mt-6 justify-center">
-							<button
-								onClick={showMoreMeals}
-								className="px-6 py-2 border-2 border-blue-500 rounded-full hover:bg-blue-500 duration-300 hover:text-white cursor-pointer">
-								Pokaż więcej
-							</button>
-						</div>
-					)}
-				</div>
+		<div className='bg-gray-100'>
+			<div className="container mx-auto p-4">
+				<CategoryDropdown categories={categories} selectedCategory={selectedCategory} filterMealsByCategory={filterMealsByCategory} />
+				<div className="flex flex-col-reverse lg:flex-row gap-6 mt-10">
+					{/* Lista posiłków */}
+					<div className="lg:w-3/4">
+						<MealList meals={filteredMeals} visibleMealsCount={visibleMealsCount} favouriteMeals={favouriteMeals} toggleFavourite={toggleFavourite} />
+						{filteredMeals.length > visibleMealsCount && (
+							<div className="flex mt-6 justify-center">
+								<button
+									onClick={showMoreMeals}
+									className="px-6 py-2 border-2 border-blue-500 rounded-full hover:bg-blue-500 duration-300 hover:text-white cursor-pointer">
+									Pokaż więcej
+								</button>
+							</div>
+						)}
+					</div>
 
-				{/* Ulubione */}
-				<div className="lg:w-1/4 mb-20">
-					<FavouriteList meals={meals} favouriteMeals={favouriteMeals} />
+					{/* Ulubione */}
+					<div className="lg:w-1/4 mb-20">
+						<FavouriteList meals={meals} favouriteMeals={favouriteMeals} />
+					</div>
 				</div>
 			</div>
 		</div>
