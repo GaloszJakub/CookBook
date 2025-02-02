@@ -21,7 +21,7 @@ export default function CategoryDropdown({ categories, selectedCategory, filterM
 			<button
 				onClick={() => setIsOpen(!isOpen)}
 				className="w-full flex justify-between items-center bg-white shadow-md px-4 py-2 rounded-lg text-gray-700 font-medium transition hover:bg-gray-100">
-				{selectedCategory || 'Wybierz kategorię'}
+				{selectedCategory || 'Select a category'}
 				{isOpen ? <HiChevronUp className="w-5 h-5" /> : <HiChevronDown className="w-5 h-5" />}
 			</button>
 			<AnimatePresence>
