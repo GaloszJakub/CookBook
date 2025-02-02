@@ -11,8 +11,8 @@ interface Props {
 
 export default function FavouriteList({ meals, favouriteMeals }: Props) {
 	return (
-		<div className="bg-white p-4 shadow-md rounded-md md:w-3/5 mx-auto">
-			<h1 className="font-semibold text-3xl">Favourites</h1>
+		<div className="bg-white p-4 shadow-md rounded-md sm:w-4/5 xl:w-3/5 mx-auto">
+			<h1 className="font-semibold text-3xl ">Favourites</h1>
 			<ul>
 				{meals
 					.filter(({ idMeal }) => favouriteMeals.includes(idMeal))
