@@ -25,8 +25,8 @@ export default function MainPage() {
 	const [filteredMeals, setFilteredMeals] = useState<Meal[]>([])
 	const [categories, setCategories] = useState<Category[]>([])
 	const [selectedCategory, setSelectedCategory] = useState<string>('')
-	const [searchTerm, setSearchTerm] = useState<string>('')
 	const [visibleMealsCount, setVisibleMealsCount] = useState<number>(8)
+	const [searchTerm, setSearchTerm] = useState<string>('') // 🔹 Stan wyszukiwania
 	const { favouriteMeals, toggleFavourite } = useFavourites()
 
 	// Pobieranie danych
@@ -35,49 +35,43 @@ export default function MainPage() {
 			const mealsData = await fetchMeals()
 			const categoriesData = await fetchCategories()
 
-			if (mealsData.length) setMeals(mealsData)
-			if (categoriesData.length) setCategories(categoriesData)
-
+			setMeals(mealsData)
 			setFilteredMeals(mealsData) // Domyślnie pokazujemy wszystkie
+			setCategories(categoriesData)
 		}
 
 		loadData()
 	}, [])
 
-	// 🔹 Filtrowanie posiłków (kategorie + wyszukiwanie)
-	useEffect(() => {
-		let updatedMeals = meals
-
-		if (selectedCategory) {
-			updatedMeals = updatedMeals.filter(meal => meal.strCategory === selectedCategory)
+	// Filtrowanie posiłków po kategorii
+	const filterMealsByCategory = (category: string) => {
+		setSelectedCategory(category)
+		if (category === '') {
+			setFilteredMeals(meals)
+		} else {
+			setFilteredMeals(meals.filter(meal => meal.strCategory === category))
 		}
+	}
 
-		if (searchTerm) {
-			updatedMeals = updatedMeals.filter(meal =>
-				meal.strMeal.toLowerCase().includes(searchTerm.toLowerCase())
-			)
-		}
-
-		setFilteredMeals(updatedMeals)
-	}, [selectedCategory, searchTerm, meals])
+	// 🔎 WYSZUKIWANIE
+	const handleSearch = (term: string) => {
+		setSearchTerm(term)
+		const filtered = meals.filter(meal =>
+			meal.strMeal.toLowerCase().includes(term.toLowerCase()) // Filtrowanie po nazwie
+		)
+		setFilteredMeals(filtered)
+	}
 
 	return (
 		<div className="bg-gray-100">
-			<NavBar searchTerm={searchTerm} onSearch={setSearchTerm} />
+			<NavBar searchTerm={searchTerm} onSearch={handleSearch} /> {/* 🔹 Przekazujemy propsy */}
 
 			<div className="container mx-auto p-4">
-				<CategoryDropdown
-					categories={categories}
-					selectedCategory={selectedCategory}
-					filterMealsByCategory={setSelectedCategory}
-				/>
+				<CategoryDropdown categories={categories} selectedCategory={selectedCategory} filterMealsByCategory={filterMealsByCategory} />
 				<div className="flex flex-col-reverse lg:flex-row gap-6 mt-10">
 					{/* Lista posiłków */}
 					<div className="lg:w-3/4">
-						<MealList
-							meals={filteredMeals.slice(0, visibleMealsCount)}
-							favouriteMeals={favouriteMeals}
-							toggleFavourite={toggleFavourite} visibleMealsCount={0}						/>
+						<MealList meals={filteredMeals} visibleMealsCount={visibleMealsCount} favouriteMeals={favouriteMeals} toggleFavourite={toggleFavourite} />
 						{filteredMeals.length > visibleMealsCount && (
 							<div className="flex mt-6 justify-center">
 								<button
